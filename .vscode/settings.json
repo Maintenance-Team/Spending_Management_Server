@@ -1,7 +1,9 @@
 {
     // auto format code when save
     "editor.formatOnSave": true,
-  
+    "[prisma]": {
+      "editor.defaultFormatter": "Prisma.prisma"
+  },
     // use prettier as default formatter
     "editor.defaultFormatter": "esbenp.prettier-vscode",
   }

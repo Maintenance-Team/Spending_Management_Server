@@ -12,11 +12,72 @@ datasource db {
 
 // generate model below
 model User {
-  id        Int      @id @default(autoincrement()) @map("user_id")
-  email     String   @unique                       @map("email")
-  name      String?                                @map("name")
-  createdAt DateTime @default(now())               @map("created_at")
-  updatedAt DateTime @updatedAt                    @map("updated_at")
+  id           Int       @id @default(autoincrement()) @map("user_id")
+  email        String    @unique @map("email")
+  password     String    @map("password")
+  name         String?   @map("name")
+  gender       Boolean?  @map("gender")
+  dateOfBirth  DateTime? @map("date_of_birth")
+  currentMoney Int       @map("current_money")
+  avatar       String?   @map("avatar")
+  refreshToken String?   @default("") @map("refresh_token")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
 
-@@map("users")
+  @@map("users")
+}
+
+model Walet {
+  userId      Int      @map("user_id")
+  monthOfYear DateTime @map("month_of_year")
+  money       Int      @map("money")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@id([userId, monthOfYear])
+  @@map("walet")
+}
+
+model TypeSpend {
+  id        Int      @id @default(autoincrement()) @map("type_spend_id")
+  name      String   @map("name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("type_spend")
+}
+
+model Spend {
+  spendId    Int      @id @default(autoincrement()) @map("spend_id")
+  userId     Int      @map("user_id")
+  moneySpend Int      @map("money_spend")
+  timeSpend  DateTime @map("time_spend")
+  type       Int      @map("type")
+  note       String?  @map("note")
+  location   String?  @map("location")
+  image      String?  @map("image")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("spend")
+}
+
+model Friend {
+  id        Int      @id @default(autoincrement()) @map("friend_id")
+  spendId   Int      @map("spend_id")
+  name      String   @map("name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("friend")
+}
+
+model History {
+  id        Int      @id @default(autoincrement()) @map("history_id")
+  userId    Int      @map("user_id")
+  history   String   @map("history")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("history")
 }
