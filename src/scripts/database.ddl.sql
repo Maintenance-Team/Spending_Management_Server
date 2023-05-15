@@ -49,6 +49,7 @@ CREATE TABLE type(
 	image TEXT,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	CONSTRAINT fk_type_grouptype FOREIGN KEY(group_type_id) REFERENCES group_type(group_type_id)
 )
 
 
