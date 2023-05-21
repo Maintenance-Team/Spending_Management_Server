@@ -6,7 +6,7 @@ CREATE TABLE users(
 	date_of_birth DATE,
 	avatar TEXT,
 	email TEXT NOT NULL,
-	password TEXT,
+	password TEXT NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
@@ -48,7 +48,7 @@ CREATE TABLE type(
 	name VARCHAR(40) NOT NULL,
 	image TEXT,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT fk_type_grouptype FOREIGN KEY(group_type_id) REFERENCES group_type(group_type_id)
 )
 
