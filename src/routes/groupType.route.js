@@ -2,6 +2,9 @@ import express from 'express';
 import groupTypeController from '../controllers/groupType.controller.js';
 const router = express.Router();
 
+//* [GET] /group-types/all/include-type  -> Get all group types include type
+router.get('/all/include-type', groupTypeController.getAllGroupTypeIncludeType);
+
 //* [GET] /group-types/all  -> Get all group types
 router.get('/all', groupTypeController.getAllGroupType);
 

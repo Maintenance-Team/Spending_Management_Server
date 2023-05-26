@@ -1,6 +1,19 @@
 import groupTypeServices from '../services/groupType.services.js';
 
 export default {
+  getAllGroupTypeIncludeType: async (req, res, next) => {
+    try {
+      const data = await groupTypeServices.getAllGroupTypeIncludeType();
+      res.status(200).json({
+        status: 200,
+        message: 'get all groupType include type success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getAllGroupType: async (req, res, next) => {
     try {
       const data = await groupTypeServices.getAllGroupType();

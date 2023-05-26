@@ -1,6 +1,17 @@
 import prisma from '../config/db.js';
 
 export default {
+  getAllGroupTypeIncludeType: async () => {
+    try {
+      const data = await prisma.groupType.findMany({
+        include: { Type: true },
+      });
+      return Promise.resolve(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getAllGroupType: async () => {
     try {
       const data = await prisma.groupType.findMany();
