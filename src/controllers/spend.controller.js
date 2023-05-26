@@ -1,21 +1,16 @@
 import prisma from '../config/db.js';
+import spendServices from '../services/spend.services.js';
 import createError from 'http-errors';
 
 export default {
   getSpend: async (req, res, next) => {
     try {
       const { id } = req.params;
-
-      const spend = await prisma.spend.findUnique({
-        where: {
-          id,
-        },
-      });
-
+      const data = await spendServices.getSpendById(id);
       res.json({
         status: 200,
         message: 'get a spend success',
-        data: spend,
+        data,
       });
     } catch (err) {
       console.log(err);
@@ -25,29 +20,30 @@ export default {
 
   getAllSpend: async (req, res, next) => {
     try {
-      const allSpend = await prisma.spend.findMany({
-        where: {
-          id: Number(1),
-        },
-      });
-
+      const data = await spendServices.getAllSpend();
       res.json({
         status: 200,
         message: 'get all spend success',
-        data: allSpend,
+        data,
       });
     } catch (err) {
       next(err);
     }
   },
 
-  getSpendInMonth: async (req, res, next) => {
+  getSpendByMonth: async (req, res, next) => {
     try {
-      //   const month = req.params;
-      //   const spends = await prisma.spend.findMany({
-      //     where: {
-      //     }
-      //   })
+      const { month, year } = req.query;
+      // check month and year in request
+      if (!month || !year) {
+        throw createError.ExpectationFailed('Expected "month" and "year" in query of request!');
+      }
+      const data = await spendServices.getAllSpendByMonth(month, year);
+      res.status(200).json({
+        status: 200,
+        message: 'get all spend by month success',
+        data,
+      });
     } catch (err) {
       next(err);
     }
@@ -56,13 +52,8 @@ export default {
   createSpend: async (req, res, next) => {
     try {
       const { waletId, typeId, moneySpend, timeSpend, note, location, image } = req.body;
-
       const newSpend = { waletId, typeId, moneySpend, timeSpend, note, location, image };
-
-      const data = await prisma.spend.create({
-        data: newSpend,
-      });
-
+      const data = await spendServices.createNewSpend(newSpend);
       res.json({
         status: 201,
         message: 'create new spend success',
@@ -76,18 +67,9 @@ export default {
   editSpend: async (req, res, next) => {
     try {
       const { id } = req.params;
-
       const { typeId, moneySpend, timeSpend, note, location, image } = req.body;
-
-      const updateSpend = { waletId, typeId, moneySpend, timeSpend, note, location, image };
-
-      const data = await prisma.spend.update({
-        data: updateSpend,
-        where: {
-          id,
-        },
-      });
-
+      const newSpend = { typeId, moneySpend, timeSpend, note, location, image };
+      const data = await spendServices.updateSpendById(id, newSpend);
       res.json({
         status: 200,
         message: 'updated spend success',
@@ -100,6 +82,13 @@ export default {
 
   deleteSpend: async (req, res, next) => {
     try {
+      const { id } = req.params;
+      const data = await spendServices.deleteSpendById(id);
+      res.status(200).json({
+        status: 200,
+        message: 'delete a spend success',
+        data,
+      });
     } catch (err) {
       next(err);
     }
