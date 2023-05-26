@@ -1,35 +1,53 @@
 import { PrismaClient } from '@prisma/client';
 
-// create an Prisma instance connect to Postgresql
+const logging = true;
 
+// logging function
 const logQuery = (instance) => {
   instance.$on('query', (e) => {
     console.log('🚀🚀🚀----------------------------------');
     console.log('Query: ' + e.query + '\n');
+    console.log('Params: ' + e.params);
+    console.log('Duration: ' + e.duration + 'ms');
+  });
+  instance.$on('error', (e) => {
+    console.log('❌❌❌----------------------------------');
+    console.log('Error: ' + e.message + '\n');
+  });
+  instance.$on('info', (e) => {
+    console.log('❗❗❗----------------------------------');
+    console.log('Infor: ' + e.message + '\n');
+  });
+  instance.$on('warn', (e) => {
+    console.log('⚠️⚠️⚠️----------------------------------');
+    console.log('Warning: ' + e.message + '\n');
   });
 };
 
-const connect = async () => {
-  // Set option log query
-  const logging = false;
+// create an Prisma instance
+const prisma = new PrismaClient({
+  log: [
+    {
+      emit: 'event',
+      level: 'query',
+    },
+    {
+      emit: 'event',
+      level: 'error',
+    },
+    {
+      emit: 'event',
+      level: 'info',
+    },
+    {
+      emit: 'event',
+      level: 'warn',
+    },
+  ],
+});
 
-  try {
-    const prisma = await new PrismaClient({
-      log: [
-        {
-          emit: 'event',
-          level: 'query',
-        },
-      ],
-    });
-    console.log('connect to DB successfully!!!');
+if (logging) {
+  logQuery(prisma);
+}
 
-    if (logging) logQuery(prisma);
-
-    return prisma;
-  } catch (err) {
-    console.log('connect to DB failure!!!');
-  }
-};
-
-export default connect();
+export default prisma;
