@@ -9,22 +9,27 @@ const logQuery = (instance) => {
   });
 };
 
-const connect = () => {
+const connect = async () => {
   // Set option log query
   const logging = false;
 
-  const prisma = new PrismaClient({
-    log: [
-      {
-        emit: 'event',
-        level: 'query',
-      },
-    ],
-  });
+  try {
+    const prisma = await new PrismaClient({
+      log: [
+        {
+          emit: 'event',
+          level: 'query',
+        },
+      ],
+    });
+    console.log('connect to DB successfully!!!');
 
-  if (logging) logQuery(prisma);
+    if (logging) logQuery(prisma);
 
-  return prisma;
+    return prisma;
+  } catch (err) {
+    console.log('connect to DB failure!!!');
+  }
 };
 
 export default connect();
