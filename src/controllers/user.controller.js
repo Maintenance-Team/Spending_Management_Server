@@ -25,10 +25,11 @@ export default {
 
   addNewUser: async (req, res, next) => {
     try {
-      const { email, name } = req.body;
+      const { email, name, password } = req.body;
       const user = {
         email,
         name,
+        password,
       };
 
       const saveUser = await prisma.User.create({

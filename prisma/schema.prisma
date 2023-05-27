@@ -12,11 +12,122 @@ datasource db {
 
 // generate model below
 model User {
-  id        Int      @id @default(autoincrement()) @map("user_id")
-  email     String   @unique                       @map("email")
-  name      String?                                @map("name")
-  createdAt DateTime @default(now())               @map("created_at")
-  updatedAt DateTime @default(now())               @map("updated_at")
+  id          Int       @id @default(autoincrement()) @map("user_id")
+  name        String?   @map("name")
+  gender      Boolean?  @map("gender")
+  dateOfBirth DateTime? @map("date_of_birth")
+  avatar      String?   @map("avatar")
+  email       String    @unique @map("email")
+  password    String    @map("password")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  // reference
+  Walet       Walet[]
+  Friend      Friend[]
 
-@@map("users")
+  @@map("users")
+}
+
+model Walet {
+  id           Int       @id @default(autoincrement()) @map("walet_id")
+  userId       Int       @map("user_id")
+  name         String    @map("name")
+  currencyUnit String?   @default("VND") @map("currency_unit")
+  money        Int       @map("money")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  // foreign key
+  user         User      @relation(fields: [userId], references: [id])
+  // reference
+  Balance      Balance[]
+  Spend        Spend[]
+
+  @@map("walet")
+}
+
+model Balance {
+  waletId       Int      @id @map("walet_id")
+  monthOfYear   DateTime @unique @map("month_of_year")
+  moneyForMonth Int      @map("money_for_month")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  // foreign key
+  walet         Walet    @relation(fields: [waletId], references: [id])
+
+  @@map("balance")
+}
+
+model GroupType {
+  id        Int      @id @default(autoincrement()) @map("group_type_id")
+  type      String   @default("spend") @map("type")
+  groupName String   @map("group_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  // reference
+  Type      Type[]
+
+  @@map("group_type")
+}
+
+model Type {
+  id          Int       @id @default(autoincrement()) @map("type_id")
+  groupTypeId Int       @map("group_type_id")
+  name        String    @map("name")
+  image       String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  // foreign key
+  groupType   GroupType @relation(fields: [groupTypeId], references: [id])
+  // /reference
+  Spend       Spend[]
+
+  @@map("type")
+}
+
+model Spend {
+  id          Int           @id @default(autoincrement()) @map("spend_id")
+  waletId     Int           @map("walet_id")
+  moneySpend  Int           @map("money_spend")
+  timeSpend   DateTime      @map("time_spend")
+  typeId      Int           @map("type_id")
+  note        String?       @map("note")
+  location    String?       @map("location")
+  image       String?       @map("image")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  // foreign key
+  walet       Walet         @relation(fields: [waletId], references: [id])
+  type        Type          @relation(fields: [typeId], references: [id])
+  // reference
+  SpendFriend SpendFriend[]
+
+  @@map("spend")
+}
+
+model Friend {
+  id          Int           @id @default(autoincrement()) @map("friend_id")
+  userId      Int           @map("user_id")
+  name        String        @map("name")
+  image       String        @map("image")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  // foreign key
+  user        User          @relation(fields: [userId], references: [id])
+  // reference
+  SpendFriend SpendFriend[]
+
+  @@map("friend")
+}
+
+model SpendFriend {
+  friendId  Int      @map("friend_id")
+  spendId   Int      @map("spend_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  // foreign key
+  friend    Friend   @relation(fields: [friendId], references: [id])
+  spend     Spend    @relation(fields: [spendId], references: [id])
+
+  @@id([friendId, spendId])
+  @@map("spend_friend")
 }
