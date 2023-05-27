@@ -25,11 +25,13 @@ CREATE TABLE walet(
 
 CREATE TABLE balance(
 	walet_id INT PRIMARY KEY,
-	month_of_year DATE NOT NULL UNIQUE,
+	month INT NOT NULL,
+	year INT NOT NULL,
 	money_for_month INT,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT fk_balance_walet FOREIGN KEY(walet_id) REFERENCES walet(walet_id)
+	CONSTRAINT fk_balance_walet FOREIGN KEY(walet_id) REFERENCES walet(walet_id),
+	CONSTRAINT unique_mm_yyyy UNIQUE(walet_id, month, year)
 )
 
 

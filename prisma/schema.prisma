@@ -47,13 +47,15 @@ model Walet {
 
 model Balance {
   waletId       Int      @id @map("walet_id")
-  monthOfYear   DateTime @unique @map("month_of_year")
+  month         Int      @map("month")
+  year          Int      @map("year")
   moneyForMonth Int      @map("money_for_month")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
   // foreign key
   walet         Walet    @relation(fields: [waletId], references: [id])
 
+  @@unique([waletId, month, year])
   @@map("balance")
 }
 
