@@ -1,4 +1,3 @@
-import prisma from '../config/db.js';
 import spendServices from '../services/spend.services.js';
 import createError from 'http-errors';
 
@@ -51,9 +50,9 @@ export default {
 
   createSpend: async (req, res, next) => {
     try {
-      const { waletId, typeId, moneySpend, timeSpend, note, location, image } = req.body;
+      const { waletId, typeId, moneySpend, timeSpend, note, location, image, listFriendId } = req.body;
       const newSpend = { waletId, typeId, moneySpend, timeSpend, note, location, image };
-      const data = await spendServices.createNewSpend(newSpend);
+      const data = await spendServices.createNewSpend(newSpend, listFriendId);
       res.json({
         status: 201,
         message: 'create new spend success',
@@ -67,9 +66,9 @@ export default {
   editSpend: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { typeId, moneySpend, timeSpend, note, location, image } = req.body;
+      const { typeId, moneySpend, timeSpend, note, location, image, listFriendId } = req.body;
       const newSpend = { typeId, moneySpend, timeSpend, note, location, image };
-      const data = await spendServices.updateSpendById(id, newSpend);
+      const data = await spendServices.updateSpendById(id, newSpend, listFriendId);
       res.json({
         status: 200,
         message: 'updated spend success',
