@@ -4,6 +4,7 @@ import spendRouter from './spend.route.js';
 import groupTypeRouter from './groupType.route.js';
 import typeRouter from './type.route.js';
 import friendRouter from './friend.route.js';
+import balanceRouter from './balance.route.js';
 
 const route = (app) => {
   app.use('/users', userRouter);
@@ -12,6 +13,7 @@ const route = (app) => {
   app.use('/group-types', groupTypeRouter);
   app.use('/types', typeRouter);
   app.use('/friends', friendRouter);
+  app.use('/balances', balanceRouter);
 };
 
 export default route;
