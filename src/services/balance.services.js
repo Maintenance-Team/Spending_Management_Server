@@ -1,4 +1,6 @@
 import prisma from '../config/db.js';
+import { updateBalance } from '../helpers/validation.js';
+import createError from 'http-errors';
 
 export default {
   getAllBalanceOfWalet: async (waletId) => {
@@ -21,7 +23,16 @@ export default {
 
   updateBalanceById: async (id, newBalance) => {
     try {
-      const data = await prisma.balance.update({ data: newBalance, where: { id: Number(id) } });
+      // validate object id
+      const { error } = updateBalance(id);
+      if (error) {
+        throw createError(error.details[0].message);
+      }
+      //   update
+      const data = await prisma.balance.updateMany({
+        data: newBalance,
+        where: { AND: [{ waletId: Number(id.waletId) }, { month: Number(id.month) }, { year: Number(id.year) }] },
+      });
       return Promise.resolve(data);
     } catch (err) {
       throw err;
