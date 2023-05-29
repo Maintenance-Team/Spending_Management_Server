@@ -33,10 +33,10 @@ export default {
 
   updateBalance: async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const { moneyForMonth } = req.body;
+      const { waletId, moneyForMonth, month, year } = req.body;
+      const id = { waletId, month, year };
       const newBalance = { moneyForMonth };
-      const data = balanceServices.updateBalanceById(id, newBalance);
+      const data = await balanceServices.updateBalanceById(id, newBalance);
       res.status(200).json({
         status: 200,
         message: 'update balance success',

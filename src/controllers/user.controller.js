@@ -1,4 +1,5 @@
 import prisma from '../config/db.js';
+import userServices from '../services/user.services.js';
 
 export default {
   getAll: async (req, res, next) => {
@@ -16,8 +17,13 @@ export default {
 
   getAnUser: async (req, res, next) => {
     try {
-      // add some query ...
-      res.send('Get one users');
+      const { id } = req.params;
+      const data = await userServices.getUserById(id);
+      res.status(200).json({
+        status: 200,
+        message: 'get user data success',
+        data,
+      });
     } catch (err) {
       next(err);
     }

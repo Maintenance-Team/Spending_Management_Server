@@ -5,7 +5,6 @@ export const loginValidate = (data) => {
     email: Joi.string().email().lowercase().required(),
     password: Joi.string().min(5).max(20).required(),
   });
-
   return LoginSchema.validate(data);
 };
 
@@ -17,6 +16,14 @@ export const registerValidate = (data) => {
     gender: Joi.boolean().required(),
     dateOfBirth: Joi.date().required(),
   });
-
   return RegisterSchema.validate(data);
+};
+
+export const updateBalance = (data) => {
+  const UpdateBalanceSchema = Joi.object({
+    waletId: Joi.number().required(),
+    month: Joi.number().required(),
+    year: Joi.number().required(),
+  });
+  return UpdateBalanceSchema.validate(data);
 };
