@@ -4,7 +4,7 @@ CREATE TABLE users(
 	name VARCHAR(20) NOT NULL,
 	gender BOOLEAN,
 	date_of_birth DATE,
-	avatar TEXT,
+	avatar TEXT DEFAULT 'https://res.cloudinary.com/dwskvqnkc/image/upload/v1685377490/avt_cfzkte.jpg',
 	email TEXT NOT NULL,
 	password TEXT NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
