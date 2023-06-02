@@ -3,7 +3,7 @@ import spendController from '../controllers/spend.controller.js';
 const router = express.Router();
 
 // [GET] spends/all -> Get all spend
-router.get('/all', spendController.getAllSpend);
+router.get('/all-of-user/:userId', spendController.getAllSpend);
 
 // [GET] spends/by-month?month="" ->  Get all spend by month
 router.get('/by-month', spendController.getSpendByMonth);
