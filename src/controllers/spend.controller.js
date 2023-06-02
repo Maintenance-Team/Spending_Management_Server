@@ -19,7 +19,8 @@ export default {
 
   getAllSpend: async (req, res, next) => {
     try {
-      const data = await spendServices.getAllSpend();
+      const { userId } = req.params;
+      const data = await spendServices.getAllSpend(userId);
       res.json({
         status: 200,
         message: 'get all spend success',

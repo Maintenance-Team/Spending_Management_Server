@@ -16,9 +16,9 @@ export default {
     }
   },
 
-  getAllSpend: async () => {
+  getAllSpend: async (userId) => {
     try {
-      const data = await prisma.spend.findMany();
+      const data = await prisma.spend.findMany({ where: { id: Number(userId) } });
       return Promise.resolve(data);
     } catch (err) {
       throw err;
