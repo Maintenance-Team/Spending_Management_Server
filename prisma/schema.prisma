@@ -75,7 +75,8 @@ model Type {
   id          Int       @id @default(autoincrement()) @map("type_id")
   groupTypeId Int       @map("group_type_id")
   name        String    @map("name")
-  image       String?
+  image       String?   @map("image")
+  type        Int       @map("type")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
   // foreign key

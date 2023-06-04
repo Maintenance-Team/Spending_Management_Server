@@ -49,6 +49,7 @@ CREATE TABLE type(
 	group_type_id INT NOT NULL,
 	name VARCHAR(40) NOT NULL,
 	image TEXT,
+	type INT DEFAULT 0,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT fk_type_grouptype FOREIGN KEY(group_type_id) REFERENCES group_type(group_type_id)
