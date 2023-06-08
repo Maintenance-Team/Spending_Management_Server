@@ -26,6 +26,14 @@ export default {
             },
           },
         },
+        include: {
+          type: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+        },
       });
       return Promise.resolve(data);
     } catch (err) {
@@ -33,13 +41,31 @@ export default {
     }
   },
 
-  getAllSpendByMonth: async (month, year) => {
+  getAllSpendByMonth: async (userId, month, year) => {
     try {
       const firstDateOfMonth = new Date(year, month - 1, 1);
       const firstDateOfLastMonth = new Date(year, month, 1);
       const data = await prisma.spend.findMany({
         where: {
-          AND: [{ timeSpend: { gt: firstDateOfMonth } }, { timeSpend: { lt: firstDateOfLastMonth } }],
+          AND: [
+            {
+              walet: {
+                user: {
+                  id: Number(userId),
+                },
+              },
+            },
+            { timeSpend: { gt: firstDateOfMonth } },
+            { timeSpend: { lt: firstDateOfLastMonth } },
+          ],
+        },
+        include: {
+          type: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
         },
       });
       return Promise.resolve(data);
