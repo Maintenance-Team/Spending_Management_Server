@@ -41,6 +41,35 @@ export default {
     }
   },
 
+  getAllSpendByDate: async (userId, date) => {
+    try {
+      const inputDate = new Date(date.slice(1, 11));
+      const prevDate = new Date(inputDate);
+      const nextDate = new Date(inputDate);
+      prevDate.setDate(inputDate.getDate() - 1);
+      nextDate.setDate(inputDate.getDate() + 1);
+      // get spend in date
+      const data = await prisma.spend.findMany({
+        where: {
+          AND: [
+            {
+              walet: {
+                user: {
+                  id: Number(userId),
+                },
+              },
+            },
+            { timeSpend: { gt: prevDate } },
+            { timeSpend: { lt: nextDate } },
+          ],
+        },
+      });
+      return Promise.resolve(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getAllSpendByMonth: async (userId, month, year) => {
     try {
       const firstDateOfMonth = new Date(year, month - 1, 1);

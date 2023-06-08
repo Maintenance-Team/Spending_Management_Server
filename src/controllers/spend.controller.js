@@ -31,6 +31,21 @@ export default {
     }
   },
 
+  getSpendByDate: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const { date } = req.query;
+      const data = await spendServices.getAllSpendByDate(userId, date);
+      res.status(200).json({
+        status: 200,
+        message: 'get all spend by date success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getSpendByMonth: async (req, res, next) => {
     try {
       const { month, year } = req.query;
