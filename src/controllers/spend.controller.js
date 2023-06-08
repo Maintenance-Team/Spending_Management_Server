@@ -34,11 +34,12 @@ export default {
   getSpendByMonth: async (req, res, next) => {
     try {
       const { month, year } = req.query;
+      const { userId } = req.params;
       // check month and year in request
       if (!month || !year) {
         throw createError.ExpectationFailed('Expected "month" and "year" in query of request!');
       }
-      const data = await spendServices.getAllSpendByMonth(month, year);
+      const data = await spendServices.getAllSpendByMonth(userId, month, year);
       res.status(200).json({
         status: 200,
         message: 'get all spend by month success',

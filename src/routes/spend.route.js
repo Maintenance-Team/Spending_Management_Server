@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/all-of-user/:userId', spendController.getAllSpend);
 
 // [GET] spends/by-month?month="" ->  Get all spend by month
-router.get('/by-month', spendController.getSpendByMonth);
+router.get('/by-month/:userId', spendController.getSpendByMonth);
 
 // [GET] spends/:id -> Get a spend
 router.get('/:id', spendController.getSpend);
