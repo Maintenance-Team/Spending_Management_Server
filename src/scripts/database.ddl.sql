@@ -19,19 +19,7 @@ CREATE TABLE walet(
 	money INT,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT fk_walet_users FOREIGN KEY(user_id) REFERENCES users(user_id)
-)
-
-
-CREATE TABLE balance(
-	walet_id INT PRIMARY KEY,
-	month INT NOT NULL,
-	year INT NOT NULL,
-	money_for_month INT,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT fk_balance_walet FOREIGN KEY(walet_id) REFERENCES walet(walet_id),
-	CONSTRAINT unique_mm_yyyy UNIQUE(walet_id, month, year)
+	CONSTRAINT fk_walet_users FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 )
 
 
@@ -52,7 +40,7 @@ CREATE TABLE type(
 	type INT DEFAULT 0,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT fk_type_grouptype FOREIGN KEY(group_type_id) REFERENCES group_type(group_type_id)
+	CONSTRAINT fk_type_grouptype FOREIGN KEY(group_type_id) REFERENCES group_type(group_type_id) ON DELETE CASCADE
 )
 
 
@@ -67,8 +55,8 @@ CREATE TABLE spend(
 	image TEXT,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT fk_spend_walet FOREIGN KEY(walet_id) REFERENCES walet(walet_id),
-	CONSTRAINT fk_spend_type FOREIGN KEY(type_id) REFERENCES type(type_id)
+	CONSTRAINT fk_spend_walet FOREIGN KEY(walet_id) REFERENCES walet(walet_id) ON DELETE CASCADE,
+	CONSTRAINT fk_spend_type FOREIGN KEY(type_id) REFERENCES type(type_id) ON DELETE CASCADE
 )
 
 
@@ -79,7 +67,7 @@ CREATE TABLE friend(
 	image TEXT,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT fk_friend_user FOREIGN KEY(user_id) REFERENCES users(user_id)
+	CONSTRAINT fk_friend_user FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 )
 
 
@@ -89,7 +77,7 @@ CREATE TABLE spend_friend(
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (friend_id, spend_id),
-	CONSTRAINT fk_spfr_spend FOREIGN KEY(spend_id) REFERENCES spend(spend_id),
-	CONSTRAINT fk_spfr_friend FOREIGN KEY(friend_id) REFERENCES friend(friend_id)
+	CONSTRAINT fk_spfr_spend FOREIGN KEY(spend_id) REFERENCES spend(spend_id) ON DELETE CASCADE,
+	CONSTRAINT fk_spfr_friend FOREIGN KEY(friend_id) REFERENCES friend(friend_id) ON DELETE CASCADE
 )
 

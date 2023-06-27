@@ -29,34 +29,19 @@ model User {
 }
 
 model Walet {
-  id           Int       @id @default(autoincrement()) @map("walet_id")
-  userId       Int       @map("user_id")
-  name         String    @map("name")
-  currencyUnit String?   @default("VND") @map("currency_unit")
-  money        Int       @map("money")
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
+  id           Int      @id @default(autoincrement()) @map("walet_id")
+  userId       Int      @map("user_id")
+  name         String   @map("name")
+  currencyUnit String?  @default("VND") @map("currency_unit")
+  money        Int      @map("money")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
   // foreign key
-  user         User      @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
   // reference
-  Balance      Balance[]
   Spend        Spend[]
 
   @@map("walet")
-}
-
-model Balance {
-  waletId       Int      @id @map("walet_id")
-  month         Int      @map("month")
-  year          Int      @map("year")
-  moneyForMonth Int      @map("money_for_month")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  // foreign key
-  walet         Walet    @relation(fields: [waletId], references: [id])
-
-  @@unique([waletId, month, year])
-  @@map("balance")
 }
 
 model GroupType {

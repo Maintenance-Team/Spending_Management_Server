@@ -12,7 +12,7 @@ export default {
     }
   },
 
-  getBalanceByMonth: async (userId, waletId, month, year) => {
+  getBalanceByMonth: async (waletId, month, year) => {
     try {
       if (!month || !year) {
         throw createError.ExpectationFailed('Expected "month" and "year" in request');
@@ -21,31 +21,45 @@ export default {
         throw createError.ExpectationFailed('Expected "waletId" in request');
       }
 
-      let getBalanceInMonth = () => {
+      // let getBalanceInMonth = () => {
+      //   return new Promise(async (resolve) => {
+      //     const data = await prisma.balance.findFirst({
+      //       where: {
+      //         AND: [
+      //           {
+      //             walet: {
+      //               user: {
+      //                 id: Number(userId),
+      //               },
+      //             },
+      //           },
+      //           { month: Number(month) },
+      //           { year: Number(year) },
+      //         ],
+      //       },
+      //       select: {
+      //         moneyForMonth: true,
+      //       },
+      //     });
+      //     return resolve(data);
+      //   });
+      // };
+
+      let getMoneyOfWalet = () => {
         return new Promise(async (resolve) => {
-          const data = await prisma.balance.findFirst({
+          const data = await prisma.walet.findUnique({
             where: {
-              AND: [
-                {
-                  walet: {
-                    user: {
-                      id: Number(userId),
-                    },
-                  },
-                },
-                { month: Number(month) },
-                { year: Number(year) },
-              ],
+              id: Number(waletId),
             },
             select: {
-              moneyForMonth: true,
+              money: true,
             },
           });
           return resolve(data);
         });
       };
 
-      let calRestMoneyOfBalance = () => {
+      let calcMoneySpendedOfWalet = () => {
         return new Promise(async (resolve) => {
           const firstDateOfMonth = new Date(year, month - 1, 1);
           const firstDateOfLastMonth = new Date(year, month, 1);
@@ -56,13 +70,6 @@ export default {
             },
             where: {
               AND: [
-                {
-                  walet: {
-                    user: {
-                      id: Number(userId),
-                    },
-                  },
-                },
                 { waletId: Number(waletId) },
                 { timeSpend: { gt: firstDateOfMonth } },
                 { timeSpend: { lt: firstDateOfLastMonth } },
@@ -73,17 +80,17 @@ export default {
         });
       };
 
-      const data = await Promise.all([getBalanceInMonth(), calRestMoneyOfBalance()]);
+      const data = await Promise.all([getMoneyOfWalet(), calcMoneySpendedOfWalet()]);
 
       if (!data[0]) {
         return Promise.resolve({});
       }
       // return data
       const spended = data[1]._sum.moneySpend;
-      const firstBalance = data[0].moneyForMonth;
-      const lastBalance = firstBalance > spended ? firstBalance - spended : spended - firstBalance;
+      const firstBalance = data[0].money;
+      const finalBalance = firstBalance > spended ? firstBalance - spended : -(spended - firstBalance);
 
-      return Promise.resolve({ firstBalance, lastBalance, spended: -spended });
+      return Promise.resolve({ firstBalance, finalBalance, spended: -spended });
     } catch (err) {
       throw err;
     }

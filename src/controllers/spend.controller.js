@@ -2,6 +2,21 @@ import spendServices from '../services/spend.services.js';
 import createError from 'http-errors';
 
 export default {
+  countSpendInDateByMonth: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const { month, year } = req.query;
+      const data = await spendServices.countSpendInDateByMonth(userId, month, year);
+      res.status(200).json({
+        status: 200,
+        message: 'get all quantity spend in date by month success!',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getSpend: async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -24,6 +39,21 @@ export default {
       res.json({
         status: 200,
         message: 'get all spend success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getSpendByDate: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const { date } = req.query;
+      const data = await spendServices.getAllSpendByDate(userId, date);
+      res.status(200).json({
+        status: 200,
+        message: 'get all spend by date success',
         data,
       });
     } catch (err) {
@@ -55,7 +85,7 @@ export default {
       const { waletId, typeId, moneySpend, timeSpend, note, location, image, listFriendId } = req.body;
       const newSpend = { waletId, typeId, moneySpend, timeSpend, note, location, image };
       const data = await spendServices.createNewSpend(newSpend, listFriendId);
-      res.json({
+      res.status(200).json({
         status: 201,
         message: 'create new spend success',
         data,
@@ -71,7 +101,7 @@ export default {
       const { typeId, moneySpend, timeSpend, note, location, image, listFriendId } = req.body;
       const newSpend = { typeId, moneySpend, timeSpend, note, location, image };
       const data = await spendServices.updateSpendById(id, newSpend, listFriendId);
-      res.json({
+      res.status(200).json({
         status: 200,
         message: 'updated spend success',
         data,

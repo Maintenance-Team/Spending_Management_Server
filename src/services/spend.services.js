@@ -1,6 +1,33 @@
 import prisma from '../config/db.js';
+import createError from 'http-errors';
 
 export default {
+  countSpendInDateByMonth: async (userId, month, year) => {
+    try {
+      if (!month || !year) {
+        throw createError.ExpectationFailed('expected month and year in query of request!');
+      }
+      const data = await prisma.$queryRaw`
+        SELECT DATE_TRUNC('day', time_spend) as date, COUNT(*) as count
+        FROM spend JOIN walet ON spend.walet_id = walet.walet_id JOIN users ON walet.user_id = users.user_id  
+        WHERE EXTRACT(MONTH FROM time_spend) = ${Number(month)}
+          AND EXTRACT(YEAR FROM time_spend) = ${Number(year)}
+          AND users.user_id = ${Number(userId)}
+        GROUP BY DATE_TRUNC('day', time_spend)
+        ORDER BY DATE_TRUNC('day', time_spend) ASC
+      `;
+
+      const convertData = data.map((row) => ({
+        date: row.date,
+        count: Number(row.count),
+      }));
+
+      return Promise.resolve({ data: convertData });
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getSpendById: async (id) => {
     try {
       const data = await prisma.spend.findUnique({
@@ -36,6 +63,85 @@ export default {
         },
       });
       return Promise.resolve(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  getAllSpendByDate: async (userId, date) => {
+    try {
+      const inputDate = new Date(date.slice(1, 11));
+      const prevDate = new Date(inputDate);
+      const nextDate = new Date(inputDate);
+      prevDate.setDate(inputDate.getDate() - 1);
+      nextDate.setDate(inputDate.getDate() + 1);
+
+      // calc income spend and total spend money in date
+      let totalTypeIncome = () => {
+        return new Promise(async (resolve) => {
+          const data = await prisma.spend.aggregate({
+            _sum: {
+              moneySpend: true,
+            },
+            where: {
+              AND: [
+                { walet: { user: { id: Number(userId) } } },
+                { type: { groupType: { type: 'income' } } },
+                { timeSpend: { gt: prevDate } },
+                { timeSpend: { lt: nextDate } },
+              ],
+            },
+          });
+          return resolve(data);
+        });
+      };
+
+      let totalTypeSpend = () => {
+        return new Promise(async (resolve) => {
+          const data = await prisma.spend.aggregate({
+            _sum: {
+              moneySpend: true,
+            },
+            where: {
+              AND: [
+                { walet: { user: { id: Number(userId) } } },
+                { type: { groupType: { type: 'spend' } } },
+                { timeSpend: { gt: prevDate } },
+                { timeSpend: { lt: nextDate } },
+              ],
+            },
+          });
+          return resolve(data);
+        });
+      };
+
+      // get all  spend in date
+      let getAllSpendInDate = () => {
+        return new Promise(async (resolve) => {
+          const data = await prisma.spend.findMany({
+            where: {
+              AND: [
+                {
+                  walet: {
+                    user: {
+                      id: Number(userId),
+                    },
+                  },
+                },
+                { timeSpend: { gt: prevDate } },
+                { timeSpend: { lt: nextDate } },
+              ],
+            },
+          });
+          return resolve(data);
+        });
+      };
+
+      const data = await Promise.all([totalTypeIncome(), totalTypeSpend(), getAllSpendInDate()]);
+      const income = data[0]._sum.moneySpend ?? 0;
+      const spended = data[1]._sum.moneySpend ?? 0;
+
+      return Promise.resolve({ income, spended, total: Number(income - spended), spendIndates: data[2] });
     } catch (err) {
       throw err;
     }
