@@ -18,16 +18,16 @@ export default {
 
   getBalanceByMonth: async (req, res, next) => {
     try {
-      const { userId } = req.params;
-      const { waletId, month, year } = req.query;
-      const data = await balanceServices.getBalanceByMonth(userId, waletId, month, year);
-      const message =
-        Object.keys(data).length > 0
-          ? 'get balance by month success'
-          : `No balance in ${month}/${year}, please create new balance for this month`;
+      const { waletId } = req.params;
+      const { month, year } = req.query;
+      const data = await balanceServices.getBalanceByMonth(waletId, month, year);
+      // const message =
+      //   Object.keys(data).length > 0
+      //     ? 'get balance by month success'
+      //     : `No balance in ${month}/${year}, please create new balance for this month`;
       res.status(200).json({
         status: 200,
-        message,
+        message: 'get balance by month success',
         data,
       });
     } catch (err) {
