@@ -48,23 +48,73 @@ export default {
       const nextDate = new Date(inputDate);
       prevDate.setDate(inputDate.getDate() - 1);
       nextDate.setDate(inputDate.getDate() + 1);
-      // get spend in date
-      const data = await prisma.spend.findMany({
-        where: {
-          AND: [
-            {
-              walet: {
-                user: {
-                  id: Number(userId),
-                },
-              },
+
+      // calc income spend and total spend money in date
+      let totalTypeIncome = () => {
+        return new Promise(async (resolve) => {
+          const data = await prisma.spend.aggregate({
+            _sum: {
+              moneySpend: true,
             },
-            { timeSpend: { gt: prevDate } },
-            { timeSpend: { lt: nextDate } },
-          ],
-        },
-      });
-      return Promise.resolve(data);
+            where: {
+              AND: [
+                { walet: { user: { id: Number(userId) } } },
+                { type: { groupType: { type: 'income' } } },
+                { timeSpend: { gt: prevDate } },
+                { timeSpend: { lt: nextDate } },
+              ],
+            },
+          });
+          return resolve(data);
+        });
+      };
+
+      let totalTypeSpend = () => {
+        return new Promise(async (resolve) => {
+          const data = await prisma.spend.aggregate({
+            _sum: {
+              moneySpend: true,
+            },
+            where: {
+              AND: [
+                { walet: { user: { id: Number(userId) } } },
+                { type: { groupType: { type: 'spend' } } },
+                { timeSpend: { gt: prevDate } },
+                { timeSpend: { lt: nextDate } },
+              ],
+            },
+          });
+          return resolve(data);
+        });
+      };
+
+      // get all  spend in date
+      let getAllSpendInDate = () => {
+        return new Promise(async (resolve) => {
+          const data = await prisma.spend.findMany({
+            where: {
+              AND: [
+                {
+                  walet: {
+                    user: {
+                      id: Number(userId),
+                    },
+                  },
+                },
+                { timeSpend: { gt: prevDate } },
+                { timeSpend: { lt: nextDate } },
+              ],
+            },
+          });
+          return resolve(data);
+        });
+      };
+
+      const data = await Promise.all([totalTypeIncome(), totalTypeSpend(), getAllSpendInDate()]);
+      const income = data[0]._sum.moneySpend ?? 0;
+      const spended = data[1]._sum.moneySpend ?? 0;
+
+      return Promise.resolve({ income, spended, total: Number(income - spended), spendIndates: data[2] });
     } catch (err) {
       throw err;
     }
