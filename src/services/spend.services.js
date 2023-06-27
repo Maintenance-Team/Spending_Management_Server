@@ -1,6 +1,33 @@
 import prisma from '../config/db.js';
+import createError from 'http-errors';
 
 export default {
+  countSpendInDateByMonth: async (userId, month, year) => {
+    try {
+      if (!month || !year) {
+        throw createError.ExpectationFailed('expected month and year in query of request!');
+      }
+      const data = await prisma.$queryRaw`
+        SELECT DATE_TRUNC('day', time_spend) as date, COUNT(*) as count
+        FROM spend JOIN walet ON spend.walet_id = walet.walet_id JOIN users ON walet.user_id = users.user_id  
+        WHERE EXTRACT(MONTH FROM time_spend) = ${Number(month)}
+          AND EXTRACT(YEAR FROM time_spend) = ${Number(year)}
+          AND users.user_id = ${Number(userId)}
+        GROUP BY DATE_TRUNC('day', time_spend)
+        ORDER BY DATE_TRUNC('day', time_spend) ASC
+      `;
+
+      const convertData = data.map((row) => ({
+        date: row.date,
+        count: Number(row.count),
+      }));
+
+      return Promise.resolve({ data: convertData });
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getSpendById: async (id) => {
     try {
       const data = await prisma.spend.findUnique({

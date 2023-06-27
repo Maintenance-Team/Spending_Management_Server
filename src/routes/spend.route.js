@@ -2,6 +2,9 @@ import express from 'express';
 import spendController from '../controllers/spend.controller.js';
 const router = express.Router();
 
+//* [GET] spends/count-spend-by-date-in-month/:userId?month=""?year=""
+router.get('/count-spend-by-date-in-month/:userId', spendController.countSpendInDateByMonth);
+
 // [GET] spends/all -> Get all spend
 router.get('/all-of-user/:userId', spendController.getAllSpend);
 
