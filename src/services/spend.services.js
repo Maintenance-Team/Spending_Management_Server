@@ -68,9 +68,12 @@ export default {
     }
   },
 
-  getAllSpendByDate: async (userId, date) => {
+  getAllSpendByDate: async (userId, day, month, year) => {
     try {
-      const inputDate = new Date(date.slice(1, 11));
+      const yyyy = Number(year);
+      const mm = Number(month) - 1;
+      const dd = Number(day) + 1;
+      const inputDate = new Date(yyyy, mm, dd);
       const prevDate = new Date(inputDate);
       const nextDate = new Date(inputDate);
       prevDate.setDate(inputDate.getDate() - 1);
