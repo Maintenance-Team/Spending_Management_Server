@@ -72,15 +72,12 @@ export default {
     try {
       const yyyy = Number(year);
       const mm = Number(month) - 1;
-      const dd = Number(day) + 1;
+      const dd = Number(day);
       const inputDate = new Date(yyyy, mm, dd);
       const prevDate = new Date(inputDate);
       const nextDate = new Date(inputDate);
       prevDate.setDate(inputDate.getDate() - 1);
       nextDate.setDate(inputDate.getDate() + 1);
-      console.log('inputDate', inputDate);
-      console.log('prevDate', prevDate);
-      console.log('nextDate', nextDate);
 
       // calc income spend and total spend money in date
       let totalTypeIncome = () => {
