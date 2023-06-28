@@ -135,6 +135,14 @@ export default {
                 { timeSpend: { lt: nextDate } },
               ],
             },
+            include: {
+              type: {
+                select: {
+                  name: true,
+                  image: true,
+                },
+              },
+            },
           });
           return resolve(data);
         });
