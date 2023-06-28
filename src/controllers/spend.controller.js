@@ -49,8 +49,8 @@ export default {
   getSpendByDate: async (req, res, next) => {
     try {
       const { userId } = req.params;
-      const { date } = req.query;
-      const data = await spendServices.getAllSpendByDate(userId, date);
+      const { day, month, year } = req.query;
+      const data = await spendServices.getAllSpendByDate(userId, day, month, year);
       res.status(200).json({
         status: 200,
         message: 'get all spend by date success',
