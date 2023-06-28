@@ -78,6 +78,9 @@ export default {
       const nextDate = new Date(inputDate);
       prevDate.setDate(inputDate.getDate() - 1);
       nextDate.setDate(inputDate.getDate() + 1);
+      console.log('inputDate', inputDate);
+      console.log('prevDate', prevDate);
+      console.log('nextDate', nextDate);
 
       // calc income spend and total spend money in date
       let totalTypeIncome = () => {
