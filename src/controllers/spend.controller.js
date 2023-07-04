@@ -2,6 +2,21 @@ import spendServices from '../services/spend.services.js';
 import createError from 'http-errors';
 
 export default {
+  getSpendByPeriod: async (req, res, next) => {
+    try {
+      const { fromDate, toDate, type } = req.query;
+      const { userId } = req.params;
+      const data = await spendServices.getSpendByPeriod(userId, fromDate, toDate, type);
+      res.status(200).json({
+        status: 200,
+        message: 'get spend in period success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   countSpendInDateByMonth: async (req, res, next) => {
     try {
       const { userId } = req.params;

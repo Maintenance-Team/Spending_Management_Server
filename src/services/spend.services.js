@@ -2,6 +2,36 @@ import prisma from '../config/db.js';
 import createError from 'http-errors';
 
 export default {
+  getSpendByPeriod: async (userId, fromDate, toDate, type) => {
+    try {
+      if (!fromDate || !toDate) {
+        throw createError.ExpectationFailed('expected fromDate and toDate in query of request');
+      }
+      if (!type) type = 'spend';
+
+      const data = await prisma.spend.findMany({
+        where: {
+          AND: [
+            {
+              walet: {
+                user: {
+                  id: Number(userId),
+                },
+              },
+            },
+            { timeSpend: { gte: new Date(fromDate), lte: new Date(toDate) } },
+            { type: { groupType: { type: 'spend' } } },
+          ],
+        },
+        include: { type: { select: { id: true, groupTypeId: true, name: true, image: true } } },
+      });
+
+      return Promise.resolve(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   countSpendInDateByMonth: async (userId, month, year) => {
     try {
       if (!month || !year) {
