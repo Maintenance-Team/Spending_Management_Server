@@ -8,6 +8,11 @@ export default {
         throw createError.ExpectationFailed('expected fromDate and toDate in query of request');
       }
       if (!type) type = 'spend';
+      // format date
+      const [fromDay, fromMonth, fromYear] = fromDate.split('/');
+      const [toDay, toMonth, toYear] = toDate.split('/');
+      fromDate = `${fromYear}-${fromMonth}-${fromDay}`;
+      toDate = `${toYear}-${toMonth}-${toDay}`;
 
       const data = await prisma.spend.findMany({
         where: {
