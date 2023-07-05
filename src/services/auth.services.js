@@ -1,6 +1,7 @@
 import prisma from '../config/db.js';
 import createError from 'http-errors';
 import { loginValidate, registerValidate } from '../helpers/validation.js';
+import bcrypt from 'bcrypt';
 
 export default {
   login: async (email, password) => {
@@ -20,7 +21,8 @@ export default {
         throw createError.NotFound('This email is not exists!');
       }
       //   compare password
-      if (password !== user.password) {
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
         throw createError.Unauthorized();
       }
       return Promise.resolve(user);
@@ -38,6 +40,12 @@ export default {
         gender,
         dateOfBirth,
       };
+
+      // Hash the password
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      newUser.password = hashedPassword;
+
       //   validate data
       const { error } = registerValidate(newUser);
       if (error) {
