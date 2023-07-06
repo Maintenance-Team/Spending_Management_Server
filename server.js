@@ -4,6 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import route from './src/routes/index.js';
+import { authenticateToken } from './src/middleware/authenticateToken.js';
 dotenv.config();
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(authenticateToken);
 
 // matching route
 route(app);
