@@ -97,8 +97,8 @@ export default {
 
   createSpend: async (req, res, next) => {
     try {
-      const { waletId, typeId, moneySpend, timeSpend, note, location, image, listFriendId } = req.body;
-      const newSpend = { waletId, typeId, moneySpend, timeSpend, note, location, image };
+      const { waletId, typeId, moneySpend, timeSpend, note, location, image, friends, listFriendId } = req.body;
+      const newSpend = { waletId, typeId, moneySpend, timeSpend, note, location, image, friends };
       const data = await spendServices.createNewSpend(newSpend, listFriendId);
       res.status(200).json({
         status: 201,
@@ -113,8 +113,8 @@ export default {
   editSpend: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { typeId, moneySpend, timeSpend, note, location, image, listFriendId } = req.body;
-      const newSpend = { typeId, moneySpend, timeSpend, note, location, image };
+      const { typeId, moneySpend, timeSpend, note, location, image, listFriendId, friends } = req.body;
+      const newSpend = { typeId, moneySpend, timeSpend, note, location, image, friends };
       const data = await spendServices.updateSpendById(id, newSpend, listFriendId);
       res.status(200).json({
         status: 200,
