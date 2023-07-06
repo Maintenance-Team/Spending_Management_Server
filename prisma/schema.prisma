@@ -80,6 +80,7 @@ model Spend {
   typeId      Int           @map("type_id")
   note        String?       @map("note")
   location    String?       @map("location")
+  friends     String[]      @default([]) @map("friends")
   image       String?       @map("image")
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")

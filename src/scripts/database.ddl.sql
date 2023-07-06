@@ -50,6 +50,7 @@ CREATE TABLE spend(
 	money_spend INT NOT NULL,
 	time_spend DATE NOT NULL,
 	type_id INT NOT NULL,
+	friends TEXT ARRAY,
 	note TEXT,
 	location TEXT,
 	image TEXT,
