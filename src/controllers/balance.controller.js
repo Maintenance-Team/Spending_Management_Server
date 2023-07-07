@@ -18,9 +18,9 @@ export default {
 
   getBalanceByMonth: async (req, res, next) => {
     try {
-      const { waletId } = req.params;
       const { month, year } = req.query;
-      const data = await balanceServices.getBalanceByMonth(waletId, month, year);
+      const userId = req.body.userId;
+      const data = await balanceServices.getBalanceByMonth(userId, month, year);
       // const message =
       //   Object.keys(data).length > 0
       //     ? 'get balance by month success'

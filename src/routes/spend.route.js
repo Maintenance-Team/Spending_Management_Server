@@ -3,7 +3,7 @@ import spendController from '../controllers/spend.controller.js';
 const router = express.Router();
 
 //* [GET] spends/period?fromDate=""?toDate=""?type=""
-router.get('/period/:userId', spendController.getSpendByPeriod);
+router.get('/period', spendController.getSpendByPeriod);
 
 //* [GET] spends/count-spend-by-date-in-month/:userId?month=""?year=""
 router.get('/count-spend-by-date-in-month', spendController.countSpendInDateByMonth);

@@ -5,7 +5,7 @@ export default {
   getSpendByPeriod: async (req, res, next) => {
     try {
       const { fromDate, toDate, type } = req.query;
-      const { userId } = req.params;
+      const userId = req.body.userId;
       const data = await spendServices.getSpendByPeriod(userId, fromDate, toDate, type);
       res.status(200).json({
         status: 200,
