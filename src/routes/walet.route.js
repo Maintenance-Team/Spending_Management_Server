@@ -3,7 +3,7 @@ import waletController from '../controllers/walet.controller.js';
 const router = express.Router();
 
 //* [GET] /walets/all-of-user/:userId   -> get all walet of user
-router.get('/all-of-user/:userId', waletController.getAllWaletOfUser);
+router.get('/all-of-user', waletController.getAllWaletOfUser);
 
 //* [GET] /walets/:id       -> get a walet
 router.get('/:id', waletController.getDetailWalet);

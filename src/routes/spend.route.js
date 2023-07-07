@@ -6,16 +6,16 @@ const router = express.Router();
 router.get('/period/:userId', spendController.getSpendByPeriod);
 
 //* [GET] spends/count-spend-by-date-in-month/:userId?month=""?year=""
-router.get('/count-spend-by-date-in-month/:userId', spendController.countSpendInDateByMonth);
+router.get('/count-spend-by-date-in-month', spendController.countSpendInDateByMonth);
 
 // [GET] spends/all -> Get all spend
-router.get('/all-of-user/:userId', spendController.getAllSpend);
+router.get('/all-of-user', spendController.getAllSpend);
 
 // [get] spends/by-date?day=""?month=""?year="" -> Get all spend by date
-router.get('/by-date/:userId', spendController.getSpendByDate);
+router.get('/by-date', spendController.getSpendByDate);
 
 // [GET] spends/by-month?month="" ->  Get all spend by month
-router.get('/by-month/:userId', spendController.getSpendByMonth);
+router.get('/by-month', spendController.getSpendByMonth);
 
 // [GET] spends/:id -> Get a spend
 router.get('/:id', spendController.getSpend);

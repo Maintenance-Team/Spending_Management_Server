@@ -3,7 +3,7 @@ import waletServices from '../services/walet.services.js';
 export default {
   getAllWaletOfUser: async (req, res, next) => {
     try {
-      const { userId } = req.params;
+      const userId = req.body.userId;
       const data = await waletServices.getAllWaletOfUser(userId);
       res.status(200).json({
         status: 200,
