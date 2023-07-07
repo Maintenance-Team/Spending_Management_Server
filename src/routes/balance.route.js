@@ -5,8 +5,8 @@ const router = express.Router();
 // //* [GET] /balances/all-of-walet/:waletId    -> Get all balance of walet by waletId
 // router.get('/all-of-walet/:waletId', balanceController.getAllBalanceOfWalet);
 
-//* [GET] /balances/by-month/:waletId?month=""?year=""
-router.get('/by-month/:waletId', balanceController.getBalanceByMonth);
+//* [GET] /balances/by-month?month=""?year=""
+router.get('/by-month', balanceController.getBalanceByMonth);
 
 // //* [POST] /balances/create     -> Create a balance
 // router.post('/create', balanceController.createBalance);

@@ -12,13 +12,10 @@ export default {
     }
   },
 
-  getBalanceByMonth: async (waletId, month, year) => {
+  getBalanceByMonth: async (userId, month, year) => {
     try {
       if (!month || !year) {
         throw createError.ExpectationFailed('Expected "month" and "year" in request');
-      }
-      if (!waletId) {
-        throw createError.ExpectationFailed('Expected "waletId" in request');
       }
 
       // let getBalanceInMonth = () => {
@@ -45,13 +42,13 @@ export default {
       //   });
       // };
 
-      let getMoneyOfWalet = () => {
+      let getMoneyOfUser = () => {
         return new Promise(async (resolve) => {
-          const data = await prisma.walet.findUnique({
+          const data = await prisma.walet.aggregate({
             where: {
-              id: Number(waletId),
+              userId: Number(userId),
             },
-            select: {
+            _sum: {
               money: true,
             },
           });
@@ -70,7 +67,7 @@ export default {
             },
             where: {
               AND: [
-                { waletId: Number(waletId) },
+                { walet: { userId: Number(userId) } },
                 { timeSpend: { gt: firstDateOfMonth } },
                 { timeSpend: { lt: firstDateOfLastMonth } },
               ],
@@ -80,14 +77,14 @@ export default {
         });
       };
 
-      const data = await Promise.all([getMoneyOfWalet(), calcMoneySpendedOfWalet()]);
+      const data = await Promise.all([getMoneyOfUser(), calcMoneySpendedOfWalet()]);
 
       if (!data[0]) {
         return Promise.resolve({});
       }
       // return data
       const spended = data[1]._sum.moneySpend;
-      const firstBalance = data[0].money;
+      const firstBalance = data[0]._sum.money;
       const finalBalance = firstBalance > spended ? firstBalance - spended : -(spended - firstBalance);
 
       return Promise.resolve({ firstBalance, finalBalance, spended: -spended });

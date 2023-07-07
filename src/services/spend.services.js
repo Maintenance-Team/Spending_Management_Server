@@ -25,7 +25,7 @@ export default {
               },
             },
             { timeSpend: { gte: new Date(fromDate), lte: new Date(toDate) } },
-            { type: { groupType: { type: 'spend' } } },
+            { type: { groupType: { type: type } } },
           ],
         },
         include: { type: { select: { id: true, groupTypeId: true, name: true, image: true } } },
