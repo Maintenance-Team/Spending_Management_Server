@@ -7,5 +7,6 @@ router.post('/login', authController.login);
 
 //* [POST] auth/register
 router.post('/register', authController.register);
+router.post('/verify_token', authController.verify);
 
 export default router;

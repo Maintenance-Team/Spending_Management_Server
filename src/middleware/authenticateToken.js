@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export function authenticateToken(req, res, next) {
   // Skip token verification for login and register routes
-  if (req.path === '/auth/login' || req.path === '/auth/register') {
+  if (req.path === '/auth/login' || req.path === '/auth/register' || req.path === '/auth/verify_token') {
     return next();
   }
 
@@ -17,7 +17,7 @@ export function authenticateToken(req, res, next) {
       return res.status(403).json({ error: 'Invalid token' });
     }
 
-    req.userId = { userId: decoded.userId };
+    req.body.userId = decoded.userId;
 
     next();
   });

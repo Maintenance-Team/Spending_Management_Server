@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 function generateTokens(user) {
-  const accessToken = jwt.sign({ userId: user.id }, 'access-token-secret', { expiresIn: '15m' });
+  const accessToken = jwt.sign({ userId: user.id }, 'access-token-secret', { expiresIn: '1d' });
   const refreshToken = jwt.sign({ userId: user.id }, 'refresh-token-secret', { expiresIn: '7d' });
   return { accessToken, refreshToken };
 }
@@ -28,7 +28,6 @@ export default {
       if (!user) {
         throw createError.NotFound('This email does not exist!');
       }
-      console.log(user);
 
       // compare password
       const passwordMatch = await bcrypt.compare(password, user.password);
@@ -39,7 +38,6 @@ export default {
       // generate access and refresh tokens
       const { accessToken, refreshToken } = generateTokens(user);
 
-      console.log('');
       return Promise.resolve({ accessToken, refreshToken });
     } catch (err) {
       throw err;
@@ -83,6 +81,14 @@ export default {
       const { accessToken, refreshToken } = generateTokens(data);
 
       return Promise.resolve({ accessToken, refreshToken });
+    } catch (err) {
+      throw err;
+    }
+  },
+  verifyAccessToken: async (access_token) => {
+    try {
+      const decoded = jwt.verify(access_token, 'access-token-secret');
+      return Promise.resolve({ message: 'success', decoded });
     } catch (err) {
       throw err;
     }

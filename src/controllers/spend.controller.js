@@ -4,7 +4,7 @@ import createError from 'http-errors';
 export default {
   countSpendInDateByMonth: async (req, res, next) => {
     try {
-      const { userId } = req.params;
+      const userId = req.body.userId;
       const { month, year } = req.query;
       const data = await spendServices.countSpendInDateByMonth(userId, month, year);
       res.status(200).json({
@@ -34,7 +34,7 @@ export default {
 
   getAllSpend: async (req, res, next) => {
     try {
-      const { userId } = req.params;
+      const userId = req.body.userId;
       const data = await spendServices.getAllSpend(userId);
       res.json({
         status: 200,
@@ -48,8 +48,8 @@ export default {
 
   getSpendByDate: async (req, res, next) => {
     try {
-      const { userId } = req.params;
       const { day, month, year } = req.query;
+      const userId = req.body.userId;
       const data = await spendServices.getAllSpendByDate(userId, day, month, year);
       res.status(200).json({
         status: 200,
@@ -57,6 +57,7 @@ export default {
         data,
       });
     } catch (err) {
+      console.log(err.message);
       next(err);
     }
   },
@@ -64,7 +65,7 @@ export default {
   getSpendByMonth: async (req, res, next) => {
     try {
       const { month, year } = req.query;
-      const { userId } = req.params;
+      const userId = req.body.userId;
       // check month and year in request
       if (!month || !year) {
         throw createError.ExpectationFailed('Expected "month" and "year" in query of request!');

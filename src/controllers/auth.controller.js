@@ -28,4 +28,23 @@ export default {
       next(err);
     }
   },
+  verify: async (req, res, next) => {
+    try {
+      const { accessToken } = req.body;
+      if (!accessToken) {
+        console.log('access token is not found');
+        return res.status(401).json({ error: 'Access token not found' });
+      }
+      console.log('verify token');
+      const data = await authServices.verifyAccessToken(accessToken);
+      console.log(data);
+      res.status(200).json({
+        status: 200,
+        message: 'success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
