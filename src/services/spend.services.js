@@ -231,16 +231,41 @@ export default {
       // create spend
       const newSpend = await prisma.spend.create({ data: newSpendData });
       // create many spend_friend
-      let spendFriends;
-      if (Array.isArray(listFriendId) && listFriendId.length > 0) {
-        spendFriends = await prisma.spendFriend.createMany({
-          data: listFriendId.map((friendId) => ({
-            friendId: Number(friendId),
-            spendId: Number(newSpend.id),
-          })),
+      // let spendFriends;
+      // if (Array.isArray(listFriendId) && listFriendId.length > 0) {
+      //   spendFriends = await prisma.spendFriend.createMany({
+      //     data: listFriendId.map((friendId) => ({
+      //       friendId: Number(friendId),
+      //       spendId: Number(newSpend.id),
+      //     })),
+      //   });
+      // }
+
+      // check type spend
+      const type = await prisma.type.findUnique({
+        where: { id: Number(newSpend.typeId) },
+        select: {
+          groupType: {
+            select: { type: true },
+          },
+        },
+      });
+
+      if (type.groupType.type === 'spend') {
+        // update money in walet decrement
+        await prisma.walet.update({
+          where: { id: newSpend.waletId },
+          data: { money: { decrement: newSpend.moneySpend } },
+        });
+      } else {
+        // update money in walet increment
+        await prisma.walet.update({
+          where: { id: newSpend.waletId },
+          data: { money: { increment: newSpend.moneySpend } },
         });
       }
-      return Promise.resolve({ newSpend, spendFriends });
+
+      return Promise.resolve({ newSpend });
     } catch (err) {
       throw err;
     }
@@ -281,7 +306,6 @@ export default {
     }
   },
 
-  //!!! handle delete all reference before delete this spend
   deleteSpendById: async (id) => {
     try {
       const data = await prisma.spend.delete({ where: { id: Number(id) } });
